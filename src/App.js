@@ -3,6 +3,7 @@ import './App.css';
 import customImage from "./coin.png"; 
 import { FaHome, FaGift, FaWallet } from "react-icons/fa";
 import axios from 'axios';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 function App() {
   const [loading, setLoading] = useState(true);
