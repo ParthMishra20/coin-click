@@ -4,7 +4,6 @@ import customImage from "./coin.png";
 import { FaHome, FaGift, FaWallet } from "react-icons/fa";
 import axios from 'axios';
 
-
 function App() {
   const [loading, setLoading] = useState(true);
   const [currentScreen, setCurrentScreen] = useState("game");
