@@ -22,6 +22,11 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
 // Routes
 app.use('/api/user', userRoutes);
 
+// Root route to confirm server is running
+app.get('/', (req, res) => {
+  res.send('<h1>Server is running successfully!</h1>');
+});
+
 // Start server
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
