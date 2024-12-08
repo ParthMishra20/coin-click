@@ -55,9 +55,11 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  const BASE_URL = 'https://coin-click.onrender.com';
+
   const saveProgress = async (telegramId, progress, level, reward, tapPower) => {
     try {
-      const response = await axios.post(`http://localhost:5001/api/user/${telegramId}`, {
+      const response = await axios.post(`${BASE_URL}/api/user/${telegramId}`, {
         progress,
         level,
         reward,
@@ -71,7 +73,7 @@ function App() {
 
   const fetchProgress = async (telegramId) => {
     try {
-      const response = await axios.get(`http://localhost:5001/api/user/${telegramId}`);
+      const response = await axios.get(`${BASE_URL}/api/user/${telegramId}`);
       const user = response.data;
       setProgress(user.progress);
       setLevel(user.level);
