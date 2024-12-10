@@ -55,7 +55,9 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  const BASE_URL = 'https://coin-click.onrender.com';
+  const BASE_URL = process.env.REACT_APP_API_URL;
+// Adjust the port if necessary
+
 
   const saveProgress = async (telegramId, progress, level, reward, tapPower) => {
     try {
@@ -121,7 +123,7 @@ function App() {
   
   const handleTapPowerUpgrade = () => {
     // Find the current upgrade information
-    const currentUpgrade = tapPowerUpgrades.find(upgrade => upgrade.multiplier === tapPower);
+    
     const currentUpgradeIndex = tapPowerUpgrades.findIndex(upgrade => upgrade.multiplier === tapPower);
     
     if (currentUpgradeIndex === -1) {
