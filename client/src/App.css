@@ -1,22 +1,122 @@
 /* General Styles */
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #000;
-    color: #fff;
-    max-width: 100%;
-    overflow-x: hidden;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #000;
+  color: #fff;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Main App Layout */
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: space-between;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Centering the entire container */
+.username-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;  /* Takes up full viewport height */
+  background-color: #1a1a1a;  /* Darker background to match the overall theme */
+}
+
+/* Styling the username input box */
+.username-setting {
+  text-align: center;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 400px;  /* Maximum width for the input box */
+  background-color: #222;  /* Dark background for the container */
+  padding: 20px;
+  border-radius: 8px;
+  border: 2px solid #fff;  /* White border around the box */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);  /* Soft shadow for depth */
+}
+
+/* Username label on top */
+.username-setting h2 {
+  color: white;
+  margin-bottom: 15px;  /* Adds space between label and input */
+}
+
+/* Styling the input field */
+.username-input {
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #666;  /* Dark border to match the theme */
+  width: 100%;
+  box-sizing: border-box;  /* Ensure padding does not affect width */
+  font-size: 16px;
+  color: #fff;  /* White text inside input */
+  background-color: #333;  /* Dark background for input */
+  transition: border-color 0.3s ease;  /* Smooth transition on focus */
+}
+
+/* On focus, change input border color */
+.username-input:focus {
+  border-color: #007bff;  /* Blue border on focus */
+  outline: none;
+}
+
+/* Styling the error message */
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* Styling the submit button */
+.submit-btn {
+  padding: 12px 20px;
+  background-color: #000;  /* Black background */
+  color: white;
+  border: 2px solid white;  /* White border */
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;  /* Smooth transition */
+  width: 100%;  /* Button spans the width of the input box */
+  box-sizing: border-box;  /* Ensure padding does not affect width */
+}
+
+/* Hover effect on the submit button */
+.submit-btn:hover {
+  background-color: #fff;  /* White background on hover */
+  color: #000;  /* Black text on hover */
+  border: 2px solid #000;  /* Black border on hover */
+}
+
+/* Centering the username display */
+.username-display {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 767px) {
+  .username-setting {
+    width: 90%;  /* Adjust the width for smaller screens */
+    max-width: 350px;  /* Smaller maximum width */
   }
-  
-  /* Main App Layout */
-  .app {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    justify-content: space-between;
-    max-width: 100%;
-    margin: 0 auto;
+
+  .username-input {
+    font-size: 14px;  /* Slightly smaller input font size */
   }
+
+  .submit-btn {
+    font-size: 14px;  /* Smaller button text */
+  }
+}
+
+
 
   .game-layout-container {
     margin-top: 80px; /* Adjusted gap between reward and coin clicker */

@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import customImage from "./coin.png"; 
 import { FaHome, FaGift, FaWallet } from "react-icons/fa";
 import axios from 'axios';
 
 function App() {
-  const [loading, setLoading] = useState(true);
-  const [currentScreen, setCurrentScreen] = useState("game");
+  const [currentScreen, setCurrentScreen] = useState("username");
+  const [username, setUsername] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [isUsernameSet, setIsUsernameSet] = useState(false);
   const [progress, setProgress] = useState(0);
   const [level, setLevel] = useState(1);
   const [goal, setGoal] = useState(100);
-  const [loadingBarProgress, setLoadingBarProgress] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
   const [reward, setReward] = useState(0);
   const [tapPower, setTapPower] = useState(1);
 
   const levelRewards = [
     10, 50, 100, 250, 500, 1000, 2500, 5000
-  ]; 
+  ];
 
   const levelGoals = [
     100, 500, 1000, 2000, 5000, 10000, 50000, 100000
@@ -34,34 +34,11 @@ function App() {
     { level: 8, cost: 25600, multiplier: 8 }
   ];
 
-  const telegramId = "your-unique-telegram-id"; // You should replace this with a dynamic value when the user first interacts with the app.
-
-  useEffect(() => {
-    // Fetch the user progress when the app loads
-    fetchProgress(telegramId);
-
-    // Simulate the loading bar
-    const interval = setInterval(() => {
-      setLoadingBarProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setLoading(false);
-          return 100;
-        }
-        return prev + 5;
-      });
-    }, 100);
-
-    return () => clearInterval(interval);
-  }, []);
-
   const BASE_URL = process.env.REACT_APP_API_URL;
-// Adjust the port if necessary
 
-
-  const saveProgress = async (telegramId, progress, level, reward, tapPower) => {
+  const saveProgress = async (username, progress, level, reward, tapPower) => {
     try {
-      const response = await axios.post(`${BASE_URL}/api/user/${telegramId}`, {
+      const response = await axios.post(`${BASE_URL}/api/user/${username}`, {
         progress,
         level,
         reward,
@@ -73,16 +50,53 @@ function App() {
     }
   };
 
-  const fetchProgress = async (telegramId) => {
+
+
+  const fetchProgress = useCallback(async (username) => {
     try {
-      const response = await axios.get(`${BASE_URL}/api/user/${telegramId}`);
+      const response = await axios.get(`${BASE_URL}/api/user/${username}`);
       const user = response.data;
       setProgress(user.progress);
       setLevel(user.level);
       setReward(user.reward);
       setTapPower(user.tapPower);
     } catch (error) {
-      console.error('Error fetching progress:', error);
+      console.error("Error fetching progress:", error);
+    }
+  }, [BASE_URL]); // Include dependencies used inside fetchProgress
+  
+  useEffect(() => {
+    if (isUsernameSet) {
+      fetchProgress(username);
+    }
+  }, [isUsernameSet, username, fetchProgress]); // Include fetchProgress in dependencies
+  
+
+  useEffect(() => {
+    if (isUsernameSet) {
+      fetchProgress(username);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isUsernameSet, username]);
+
+  const checkUsernameExists = async (username) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/api/user/exists/${username}`);
+      return response.data.exists; // Assume the API returns a boolean field `exists`
+    } catch (error) {
+      console.error('Error checking username:', error);
+      return false;
+    }
+  };
+
+  const handleUsernameSubmit = async () => {
+    const usernameExists = await checkUsernameExists(username);
+    if (usernameExists) {
+      setUsernameError("Username already exists! Please choose another.");
+    } else {
+      setUsernameError("");
+      setIsUsernameSet(true);
+      setCurrentScreen("game");
     }
   };
 
@@ -90,18 +104,12 @@ function App() {
     const newProgress = progress + tapPower;
     const newReward = reward + tapPower;
 
-    setIsAnimating(true);
-    setTimeout(() => {
-      setIsAnimating(false);
-    }, 500);
-
     if (newProgress >= goal) {
       const newLevel = level + 1;
       let newGoal;
 
       if (newLevel <= levelGoals.length) {
         newGoal = levelGoals[newLevel - 1];
-        
         const levelUpReward = levelRewards[newLevel - 1] || levelRewards[levelRewards.length - 1];
         setReward(prevReward => prevReward + levelUpReward);
       } else {
@@ -116,22 +124,17 @@ function App() {
     }
 
     setReward(newReward);
-    
-    // Save the updated progress
-    saveProgress(telegramId, newProgress, level, newReward, tapPower);
+    saveProgress(username, newProgress, level, newReward, tapPower);
   };
-  
+
   const handleTapPowerUpgrade = () => {
-    // Find the current upgrade information
-    
     const currentUpgradeIndex = tapPowerUpgrades.findIndex(upgrade => upgrade.multiplier === tapPower);
     
     if (currentUpgradeIndex === -1) {
       alert("Error: Current tap power level not found.");
       return;
     }
-  
-    // Custom logic for each upgrade level
+
     const nextUpgrade = (() => {
       switch(currentUpgradeIndex) {
         case 0: return { level: 2, cost: 200, multiplier: 2 };
@@ -146,14 +149,10 @@ function App() {
     })();
     
     if (nextUpgrade) {
-      // Check if you have enough rewards to upgrade
       if (reward >= nextUpgrade.cost) {
-        // Update reward and tap power correctly
         setReward(prevReward => prevReward - nextUpgrade.cost);
         setTapPower(nextUpgrade.multiplier);
-        
-        // Save the updated progress
-        saveProgress(telegramId, progress, level, reward - nextUpgrade.cost, nextUpgrade.multiplier);
+        saveProgress(username, progress, level, reward - nextUpgrade.cost, nextUpgrade.multiplier);
       } else {
         alert(`Not enough rewards! You need ${nextUpgrade.cost} rewards to upgrade.`);
       }
@@ -161,92 +160,65 @@ function App() {
       alert('You have reached the maximum tap power upgrade!');
     }
   };
-  
-  
 
-  const renderGameScreen = () => {
-    // Determine current level and cost based on tap power
-    const currentLevel = (() => {
-      switch(tapPower) {
-        case 1: return 1;
-        case 2: return 2;
-        case 3: return 3;
-        case 4: return 4;
-        case 5: return 5;
-        case 6: return 6;
-        case 7: return 7;
-        case 8: return 8;
-        default: return 1;
-      }
-    })();
-  
-    const currentCost = (() => {
-      switch(tapPower) {
-        case 1: return 200;
-        case 2: return 400;
-        case 3: return 800;
-        case 4: return 1600;
-        case 5: return 3200;
-        case 6: return 6400;
-        case 7: return 12800;
-        case 8: return 25600;
-        default: return 200;
-      }
-    })();
-  
-  
-    return (
-      <div className="game-screen">
-        <div className="progress-level-container">
-          <div className="progress-container">
-            <div
-              className="progress-bar-fill"
-              style={{
-                width: `${(progress / goal) * 100}%`,
-              }}
-            ></div>
-          </div>
-          <div className="level-indicator">Level: {level}</div>
+  const renderUsernameForm = () => (
+    <div className="username-form">
+      <h2>Enter your Username</h2>
+      <input
+        type="text"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        placeholder="Username"
+      />
+      <button onClick={handleUsernameSubmit}>Submit</button>
+      {usernameError && <p className="error">{usernameError}</p>}
+    </div>
+  );
+
+  const renderGameScreen = () => (
+    <div className="game-screen">
+      <div className="progress-level-container">
+        <div className="progress-container">
+          <div
+            className="progress-bar-fill"
+            style={{
+              width: `${(progress / goal) * 100}%`,
+            }}
+          ></div>
         </div>
-  
-        <div className="game-layout-container">
-          <div className="tap-power-upgrade-section">
-            <div className="tap-power-level">
-              Tap Power: Level {currentLevel}
-            </div>
-            <button 
-              onClick={handleTapPowerUpgrade} 
-              className="upgrade-button"
-            >
-              Upgrade (Cost: {currentCost})
-            </button>
+        <div className="level-indicator">Level: {level}</div>
+      </div>
+      <div className="game-layout-container">
+        <div className="tap-power-upgrade-section">
+          <div className="tap-power-level">
+            Tap Power: Level {tapPower}
           </div>
-  
-          <div>
-            <div
-              className={`clicker ${isAnimating ? "clicked" : ""}`}
-              onClick={handleCoinClick}
-              style={{
-                width: "150px",
-                height: "150px",
-                backgroundImage: `url(${customImage})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                border: "2px solid #fff",
-                borderRadius: "50%",
-                cursor: "pointer",
-              }}
-            ></div>
-          </div>
+          <button onClick={handleTapPowerUpgrade} className="upgrade-button">
+            Upgrade (Cost: {tapPowerUpgrades[tapPower - 1]?.cost})
+          </button>
         </div>
-  
-        <div className="reward-display">
-          Reward: {reward}
+        <div>
+          <div
+            className="clicker"
+            onClick={handleCoinClick}
+            style={{
+              width: "150px",
+              height: "150px",
+              backgroundImage: `url(${customImage})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              border: "2px solid #fff",
+              borderRadius: "50%",
+              cursor: "pointer",
+            }}
+          ></div>
         </div>
       </div>
-    );
-  };
-  
+      <div className="reward-display">
+        Reward: {reward}
+      </div>
+    </div>
+  );
 
   const renderWalletScreen = () => (
     <div className="wallet-screen">
@@ -275,17 +247,16 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    if (isUsernameSet) {
+      fetchProgress(username);  // Fetch progress data after username is set
+    }
+  }, [isUsernameSet, username]);
+
   return (
     <div className="app">
-      {loading ? (
-        <div className="loading-screen">
-          <div className="loading-bar">
-            <div
-              className="loading-bar-progress"
-              style={{ width: `${loadingBarProgress}%` }}
-            ></div>
-          </div>
-        </div>
+      {currentScreen === "username" ? (
+        renderUsernameForm()
       ) : (
         <>
           <div className="content">{renderContent()}</div>
