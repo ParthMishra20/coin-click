@@ -34,7 +34,7 @@ function App() {
     { level: 8, cost: 25600, multiplier: 8 }
   ];
 
-  const BASE_URL = process.env.REACT_APP_API_URL;
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
 
   const saveProgress = async (username, progress, level, reward, tapPower) => {
     try {
