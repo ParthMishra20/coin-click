@@ -34,7 +34,7 @@ function App() {
     { level: 8, cost: 25600, multiplier: 8 }
   ];
 
-  const BASE_URL = process.env.REACT_APP_BASE_URL;
+  const BASE_URL = 'https://coin-click.onrender.com'; // Use environment variable
 
   const saveProgress = async (username, progress, level, reward, tapPower) => {
     try {
@@ -49,8 +49,6 @@ function App() {
       console.error('Error saving progress:', error);
     }
   };
-
-
 
   const fetchProgress = useCallback(async (username) => {
     try {
