@@ -23,98 +23,116 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;  /* Takes up full viewport height */
-  background-color: #1a1a1a;  /* Darker background to match the overall theme */
+  height: 100vh; /* Full viewport height */
+  background-color: #1a1a1a; /* Dark background */
+  padding: 20px; /* Padding for smaller screens */
 }
 
-/* Styling the username input box */
+/* Styling the form container */
 .username-setting {
-  text-align: center;
-  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
   width: 100%;
-  max-width: 400px;  /* Maximum width for the input box */
-  background-color: #222;  /* Dark background for the container */
+  max-width: 400px; /* Maximum width */
+  background-color: #222; /* Darker container background */
   padding: 20px;
   border-radius: 8px;
-  border: 2px solid #fff;  /* White border around the box */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);  /* Soft shadow for depth */
+  border: 2px solid #fff; /* White border */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+  box-sizing: border-box;
 }
 
-/* Username label on top */
+/* Username label */
 .username-setting h2 {
-  color: white;
-  margin-bottom: 15px;  /* Adds space between label and input */
+  color: #fff;
+  margin-bottom: 0;
+  font-size: 18px;
+  text-align: left;
+}
+
+/* Input and Button group */
+.input-group {
+  display: flex;
+  width: 100%;
+  gap: 10px; /* Space between input and button */
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
 }
 
 /* Styling the input field */
 .username-input {
+  flex-grow: 1;
   padding: 12px;
-  margin: 10px 0;
   border-radius: 5px;
-  border: 1px solid #666;  /* Dark border to match the theme */
-  width: 100%;
-  box-sizing: border-box;  /* Ensure padding does not affect width */
+  border: 1px solid #666;
+  background-color: #333;
+  color: #fff;
   font-size: 16px;
-  color: #fff;  /* White text inside input */
-  background-color: #333;  /* Dark background for input */
-  transition: border-color 0.3s ease;  /* Smooth transition on focus */
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+  width: 100%; /* Full width by default */
 }
 
-/* On focus, change input border color */
+/* Input focus effect */
 .username-input:focus {
-  border-color: #007bff;  /* Blue border on focus */
+  border-color: #007bff;
   outline: none;
-}
-
-/* Styling the error message */
-.error {
-  color: red;
-  font-size: 14px;
-  margin-top: 10px;
 }
 
 /* Styling the submit button */
 .submit-btn {
   padding: 12px 20px;
-  background-color: #000;  /* Black background */
-  color: white;
-  border: 2px solid white;  /* White border */
+  background-color: #000;
+  color: #fff;
+  border: 2px solid #fff;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  transition: all 0.3s ease;  /* Smooth transition */
-  width: 100%;  /* Button spans the width of the input box */
-  box-sizing: border-box;  /* Ensure padding does not affect width */
+  transition: all 0.3s ease;
+  width: auto; /* Auto-width for responsiveness */
+  min-width: 100px; /* Ensure button is always large enough */
 }
 
-/* Hover effect on the submit button */
+/* Hover effect on the button */
 .submit-btn:hover {
-  background-color: #fff;  /* White background on hover */
-  color: #000;  /* Black text on hover */
-  border: 2px solid #000;  /* Black border on hover */
+  background-color: #fff;
+  color: #000;
+  border: 2px solid #000;
 }
 
-/* Centering the username display */
-.username-display {
-  text-align: center;
-  margin-top: 20px;
+/* Error message styling */
+.error {
+  color: #ff4d4d;
+  font-size: 14px;
+  margin-top: 10px;
 }
 
-/* Responsive Design */
-@media (max-width: 767px) {
-  .username-setting {
-    width: 90%;  /* Adjust the width for smaller screens */
-    max-width: 350px;  /* Smaller maximum width */
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  /* Input and button stack on smaller screens */
+  .input-group {
+    flex-direction: column;
+    gap: 5px;
   }
 
-  .username-input {
-    font-size: 14px;  /* Slightly smaller input font size */
-  }
-
+  /* Adjust button font size and padding for smaller screens */
   .submit-btn {
-    font-size: 14px;  /* Smaller button text */
+    font-size: 14px;
+    padding: 10px 15px;
+  }
+
+  /* Smaller font size for heading */
+  .username-setting h2 {
+    font-size: 16px;
+  }
+
+  /* Add padding around the form container */
+  .username-setting {
+    padding: 15px;
   }
 }
+
 
 
 

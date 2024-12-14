@@ -161,17 +161,25 @@ function App() {
 
   const renderUsernameForm = () => (
     <div className="username-form">
-      <h2>Enter your Username</h2>
-      <input
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Username"
-      />
-      <button onClick={handleUsernameSubmit}>Submit</button>
-      {usernameError && <p className="error">{usernameError}</p>}
+      <div className="username-setting">
+        <h2>Enter Your Username</h2>
+        <div className="input-group">
+          <input
+            type="text"
+            className="username-input"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Username"
+          />
+          <button className="submit-btn" onClick={handleUsernameSubmit}>
+            Submit
+          </button>
+        </div>
+        {usernameError && <p className="error">{usernameError}</p>}
+      </div>
     </div>
   );
+  
 
   const renderGameScreen = () => (
     <div className="game-screen">
